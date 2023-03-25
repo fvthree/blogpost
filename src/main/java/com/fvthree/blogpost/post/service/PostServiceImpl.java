@@ -21,12 +21,11 @@ import net.jodah.expiringmap.ExpiringMap;
 public class PostServiceImpl implements PostService {
 	
 	@Autowired
-	private final PostRepository postRepository;
+	private PostRepository postRepository;
 	
     private ExpiringMap<String, Post> expiringPostMap;
 	
-	public PostServiceImpl(PostRepository postRepository) {
-		this.postRepository = postRepository;
+	public PostServiceImpl() {
 		this.expiringPostMap = ExpiringMap.builder().variableExpiration().maxSize(1000).build();
 	}
 
@@ -37,8 +36,6 @@ public class PostServiceImpl implements PostService {
 			throw new HTTP400Exception("title already exists.");
 		}
 		
-		log.info(req.getContentOne());
-		
 		Post post = Post.builder()
 				.title(req.getTitle())
 				.contentOne(req.getContentOne())
@@ -47,8 +44,6 @@ public class PostServiceImpl implements PostService {
 				.category(req.getCategory())
 				.image(req.getImage())
 				.build();
-		
-		log.info(post.getContentOne());
 		
 		return postRepository.save(post);
 	}

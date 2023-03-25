@@ -1,7 +1,5 @@
 package com.fvthree.blogpost.post.controller;
 
-import java.io.IOException;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fvthree.blogpost.dto.CreateBlogPost;
 import com.fvthree.blogpost.post.entity.Post;
 import com.fvthree.blogpost.post.service.PostService;
@@ -38,7 +34,6 @@ public class PostController extends PostAbstractController {
 	
 	@PostMapping("/post")
 	public ResponseEntity<?> createPost(@Valid @RequestBody CreateBlogPost request) {
-		log.info(request.getContentOne());
 		Post post = postService.create(request);
 		return ResponseEntity.ok().body(post);
 	}
