@@ -15,4 +15,12 @@ public class CustomPropertiesConfig {
 	private int jwtExpirationMs;
 	
 	private int jwtRefreshExpirationMs;
+	
+	private String memcachedActiveHost;
+	
+	private String memcachedActivePort;
+	
+	private String memcachedStandByHost;
+	
+	private String memcachedStandByPort;
 }

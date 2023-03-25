@@ -1,5 +1,7 @@
 package com.fvthree.blogpost.post.controller;
 
+import java.io.IOException;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fvthree.blogpost.dto.CreateBlogPost;
 import com.fvthree.blogpost.post.entity.Post;
 import com.fvthree.blogpost.post.service.PostService;
@@ -51,7 +55,7 @@ public class PostController extends PostAbstractController {
 	}
 	
 	@GetMapping("/post/{id}")
-	public ResponseEntity<?> getPostById(@PathVariable(name="id") Long id) {
+	public ResponseEntity<?> getPostById(@PathVariable(name="id") Long id) throws JsonParseException, JsonMappingException, IOException {
 		return new ResponseEntity<>(postService.getPost(id), HttpStatus.OK);
 	}
 	

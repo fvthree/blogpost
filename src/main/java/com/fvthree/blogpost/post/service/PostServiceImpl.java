@@ -1,11 +1,14 @@
 package com.fvthree.blogpost.post.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fvthree.blogpost.dto.CreateBlogPost;
 import com.fvthree.blogpost.exceptions.HTTP400Exception;
 import com.fvthree.blogpost.exceptions.HTTP404Exception;
@@ -13,6 +16,7 @@ import com.fvthree.blogpost.post.entity.Post;
 import com.fvthree.blogpost.post.repository.PostRepository;
 
 import lombok.extern.slf4j.Slf4j;
+import net.jodah.expiringmap.ExpiringMap;
 
 @Service
 @Transactional
@@ -22,8 +26,11 @@ public class PostServiceImpl implements PostService {
 	@Autowired
 	private final PostRepository postRepository;
 	
+    private ExpiringMap<String, Post> expiringPostMap;
+	
 	public PostServiceImpl(PostRepository postRepository) {
 		this.postRepository = postRepository;
+		this.expiringPostMap = ExpiringMap.builder().variableExpiration().maxSize(1000).build();
 	}
 
 	@Override
@@ -78,8 +85,17 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public Post getPost(Long id) {
-		return postRepository.findById(id)
-				.orElseThrow(() -> new HTTP404Exception("Post not found"));
+		
+		String key = String.valueOf(id);
+		if(expiringPostMap.containsKey(key)) {
+			return expiringPostMap.get(key);
+		} else {
+			Post post = postRepository.findById(id)
+					.orElseThrow(() -> new HTTP404Exception("Post not found"));
+			expiringPostMap.put(key, post);
+			return post;
+		}
+		
 	}
 
 	@Override
