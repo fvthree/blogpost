@@ -55,7 +55,7 @@ public class PostController extends PostAbstractController {
 	}
 	
 	@GetMapping("/post/{id}")
-	public ResponseEntity<?> getPostById(@PathVariable(name="id") Long id) throws JsonParseException, JsonMappingException, IOException {
+	public ResponseEntity<?> getPostById(@PathVariable(name="id") Long id) {
 		return new ResponseEntity<>(postService.getPost(id), HttpStatus.OK);
 	}
 	
