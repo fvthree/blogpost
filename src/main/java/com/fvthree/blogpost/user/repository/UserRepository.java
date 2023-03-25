@@ -14,7 +14,6 @@ import com.fvthree.blogpost.user.entity.User;
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 	boolean existsByEmail(String email);
-	boolean existsByName(String name);
 	Optional<User> findByEmail(String email);
 	Page<User> findAll(Pageable pageable);
 }

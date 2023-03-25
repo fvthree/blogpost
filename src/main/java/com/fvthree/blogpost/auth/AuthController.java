@@ -74,9 +74,6 @@ public class AuthController extends AuthAbstractController {
     public ResponseEntity<JwtResponse> registerUser(
         @Valid @RequestBody SignupRequest signUpRequest,
         @RequestParam(required = false, defaultValue = "false") boolean sendPasswordEmail) {
-        if (userRepository.existsByName(signUpRequest.getName())) {
-        	throw new HTTP400Exception("Name already exists.");
-        }
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
         	throw new HTTP400Exception("Email already exists.");
         }

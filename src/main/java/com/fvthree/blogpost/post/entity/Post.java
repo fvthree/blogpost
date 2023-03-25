@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -41,7 +42,12 @@ public class Post implements Serializable {
 	private static final long serialVersionUID = 584510760798749663L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(
+            name = "post_sequence",
+            sequenceName = "post_sequence",
+            allocationSize = 1
+    )
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "post_sequence")
 	@Column(name="post_id")
 	private Long id;
 	

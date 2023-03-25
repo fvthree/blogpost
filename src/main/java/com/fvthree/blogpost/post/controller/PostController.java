@@ -34,6 +34,7 @@ public class PostController extends PostAbstractController {
 	
 	@PostMapping("/post")
 	public ResponseEntity<?> createPost(@Valid @RequestBody CreateBlogPost request) {
+		log.info(request.getContentOne());
 		Post post = postService.create(request);
 		return ResponseEntity.ok().body(post);
 	}
@@ -54,7 +55,7 @@ public class PostController extends PostAbstractController {
 		return new ResponseEntity<>(postService.getPost(id), HttpStatus.OK);
 	}
 	
-	@GetMapping("/post/{category}")
+	@GetMapping("/post/category/{category}")
 	public ResponseEntity<?> getPostsByCategory(@PathVariable(name="category") String category) {
 		return new ResponseEntity<>(postService.getPostByCategory(category), HttpStatus.OK);
 	}

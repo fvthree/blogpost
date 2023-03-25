@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fvthree.blogpost.dto.CreateBlogPost;
 import com.fvthree.blogpost.exceptions.HTTP400Exception;
@@ -11,7 +12,11 @@ import com.fvthree.blogpost.exceptions.HTTP404Exception;
 import com.fvthree.blogpost.post.entity.Post;
 import com.fvthree.blogpost.post.repository.PostRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Transactional
+@Slf4j
 public class PostServiceImpl implements PostService {
 	
 	@Autowired
@@ -28,6 +33,8 @@ public class PostServiceImpl implements PostService {
 			throw new HTTP400Exception("title already exists.");
 		}
 		
+		log.info(req.getContentOne());
+		
 		Post post = Post.builder()
 				.title(req.getTitle())
 				.contentOne(req.getContentOne())
@@ -36,6 +43,8 @@ public class PostServiceImpl implements PostService {
 				.category(req.getCategory())
 				.image(req.getImage())
 				.build();
+		
+		log.info(post.getContentOne());
 		
 		return postRepository.save(post);
 	}

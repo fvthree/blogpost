@@ -27,10 +27,10 @@ CREATE TABLE user_roles(
 
 CREATE TABLE post(
 	post_id bigint NOT NULL AUTO_INCREMENT,
-	image varchar(MAX) NOT NULL,
+	image text NOT NULL,
 	title varchar(100) NOT NULL,
-	contentOne varchar(MAX) NOT NULL,
-	contentTwo varchar(MAX) NOT NULL,
+	content_one text NOT NULL,
+	content_two text NOT NULL,
 	category varchar(100) NOT NULL,
 	author varchar(100) NOT NULL,
 	date_created DATETIME,
