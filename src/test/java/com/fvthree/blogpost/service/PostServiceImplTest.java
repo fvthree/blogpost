@@ -8,6 +8,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.fvthree.blogpost.dto.CreateBlogPost;
+import com.fvthree.blogpost.exceptions.HTTP400Exception;
 import com.fvthree.blogpost.exceptions.HTTP404Exception;
 import com.fvthree.blogpost.post.entity.Post;
 import com.fvthree.blogpost.post.repository.PostRepository;
@@ -42,7 +45,7 @@ public class PostServiceImplTest {
 		// When
 		when(postRepository.save(any(Post.class))).thenReturn(post);
 		
-		Post posted = postService.create(createBlogPost());
+		Post posted = postService.create(this.createBlogPost());
 		
 		// Then
 		assertEquals(posted.getTitle(), post.getTitle());
@@ -60,7 +63,7 @@ public class PostServiceImplTest {
 		assertEquals("Post not found", exception.getMessage());
 	}
 	
-	@DisplayName("Get Post - Post Not Found Scenario")
+	@DisplayName("Get Post - Post Found Scenario")
 	@Test
 	void test_when_Get_Post_Success() {
 		// Mock
@@ -81,7 +84,66 @@ public class PostServiceImplTest {
 		assertEquals(posted.getImage(), post.getImage());
 		assertEquals(posted.getContentOne(), post.getContentOne());
 		assertEquals(posted.getContentTwo(), post.getContentTwo());
-
+	}
+	
+	@DisplayName("Update Post - Post Title Exists Scenario")
+	@Test
+	void test_when_Update_Post_Exists_then_Exists_Already() {
+		// Mock
+		Post post = getMockPost();
+		// When
+		when(postRepository.findById(anyLong()))
+			.thenReturn(Optional.of(post));
+		when(postRepository.existsByTitle(any()))
+			.thenReturn(true);
+		
+		HTTP400Exception exception =
+					assertThrows(HTTP400Exception.class, 
+							() -> postService.update(1L, this.updateBlogPost()));
+		
+		// Then
+		assertEquals("title already exists.", exception.getMessage());
+	}
+	
+	@DisplayName("Update Post - Post Success")
+	@Test
+	void test_when_Update_Post_then_Success() {
+		// Mock
+		Post post = getMockPost();
+		
+		// When
+		when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
+		when(postRepository.save(any(Post.class))).thenReturn(post);
+		when(postRepository.existsByTitle(any())).thenReturn(false);
+		
+		// Actual
+		Post posted = postService.update(1L, this.updateBlogPost());
+		
+		// Then
+		assertNotNull(posted);
+		assertEquals(posted.getTitle(), post.getTitle());
+		assertEquals(posted.getAuthor(), post.getAuthor());
+		assertEquals(posted.getCategory(), post.getCategory());
+		assertEquals(posted.getImage(), post.getImage());
+		assertEquals(posted.getContentOne(), post.getContentOne());
+		assertEquals(posted.getContentTwo(), post.getContentTwo());
+	}
+	
+	@DisplayName("Get Posts By Category - Should have 2 Posts")
+	@Test
+	void test_when_Get_Post_Then_Return_Two() {
+		List<Post> postsMock = new ArrayList<>();
+		Post post1 = getMockPost();
+		Post post2 = getMockPost();
+		postsMock.add(post1);
+		postsMock.add(post2);
+		
+		when(postRepository.findByCategory(any())).thenReturn(postsMock);
+		
+		List<Post> posts = postService.getPostByCategory("Personal");
+		
+		assertNotNull(posts);
+		assertEquals(posts.size(), 2);
 	}
 	
 	private Post getMockPost() {
@@ -101,6 +163,17 @@ public class PostServiceImplTest {
 	private CreateBlogPost createBlogPost() {
 		return CreateBlogPost.builder()
 				.title("Lorem Ipsum")
+				.category("Personal")
+				.author("Me")
+				.image("Lorem.png")
+				.contentOne("Lorem Ipsum dolor sit")
+				.contentTwo("Lorem Ipsum dolor sit")
+				.build();
+	}
+	
+	private CreateBlogPost updateBlogPost() {
+		return CreateBlogPost.builder()
+				.title("Lorem Ipsum2")
 				.category("Personal")
 				.author("Me")
 				.image("Lorem.png")
