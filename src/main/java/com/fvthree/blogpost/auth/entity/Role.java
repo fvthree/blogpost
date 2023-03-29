@@ -31,7 +31,7 @@ public class Role {
             name = "roles_sequence",
             sequenceName = "roles_sequence",
             allocationSize = 1,
-            initialValue = 1000
+            initialValue = 1
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_sequence")
     @Column(name = "role_id", updatable = false, nullable = false)

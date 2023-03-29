@@ -54,13 +54,13 @@ public class Post implements Serializable {
 	@Column(name="title", nullable=false)
 	private String title;
 	
-	@Column(name="content_one", nullable=false)
+	@Column(name="content_one", nullable=false, columnDefinition="TEXT")
 	private String contentOne;
 	
-	@Column(name="content_two", nullable=false)
+	@Column(name="content_two", nullable=false, columnDefinition="TEXT")
 	private String contentTwo;
 	
-	@Column(name="image")
+	@Column(name="image", columnDefinition="TEXT")
 	private String image;
 	
 	@Column(name="category", nullable=false)
